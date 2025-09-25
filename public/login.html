@@ -208,6 +208,32 @@
     </div>
 
     <script>
+        // Check if user is already logged in on page load
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/auth-status', {
+                    credentials: 'include' // Include session cookies
+                });
+                const result = await response.json();
+                
+                if (result.authenticated) {
+                    // User is already logged in, redirect them
+                    console.log('User already authenticated:', result);
+                    if (result.role === 'admin' || result.role === 'host') {
+                        window.location.replace('/host');
+                    } else {
+                        window.location.replace('/player');
+                    }
+                }
+            } catch (error) {
+                console.log('Auth status check failed:', error);
+                // Ignore error, show login form
+            }
+        }
+        
+        // Check auth status on page load
+        checkAuthStatus();
+        
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -232,23 +258,37 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'include', // Important for session cookies
                     body: JSON.stringify({ username, password })
                 });
                 
                 const result = await response.json();
+                console.log('Login response:', result);
                 
                 if (result.success) {
                     successDiv.textContent = 'Login berhasil! Mengalihkan...';
                     successDiv.style.display = 'block';
                     
-                    // Redirect based on user role
+                    // Redirect based on user role with error handling
                     setTimeout(() => {
-                        if (result.role === 'admin') {
-                            window.location.href = '/host';
-                        } else if (result.role === 'host') {
-                            window.location.href = '/host';
-                        } else {
-                            window.location.href = '/player';
+                        try {
+                            let redirectUrl;
+                            if (result.role === 'admin') {
+                                redirectUrl = '/host';
+                            } else if (result.role === 'host') {
+                                redirectUrl = '/host';
+                            } else {
+                                redirectUrl = '/player';
+                            }
+                            
+                            console.log('Redirecting to:', redirectUrl);
+                            
+                            // Force page reload to ensure session is properly set
+                            window.location.replace(redirectUrl);
+                        } catch (error) {
+                            console.error('Redirect error:', error);
+                            // Fallback to manual navigation
+                            window.location.href = result.role === 'player' ? '/player' : '/host';
                         }
                     }, 1000);
                 } else {
