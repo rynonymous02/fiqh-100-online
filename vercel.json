@@ -20,10 +20,5 @@
     "PLAYER2_PASSWORD": "@player2_password",
     "PLAYER3_PASSWORD": "@player3_password",
     "PLAYER4_PASSWORD": "@player4_password"
-  },
-  "functions": {
-    "server.js": {
-      "maxDuration": 30
-    }
   }
 }

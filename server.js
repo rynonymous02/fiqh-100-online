@@ -1,3 +1,6 @@
+// Load environment variables
+require('dotenv').config();
+
 const WebSocket = require('ws');
 const http = require('http');
 const express = require('express');

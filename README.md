@@ -21,6 +21,12 @@ Proyek ini adalah implementasi game Family 100 berbasis web, dengan soal-soal se
    npm install
    ```
 
+3. **Setup environment variables**:
+   ```
+   copy .env.example .env
+   ```
+   Edit file `.env` dan sesuaikan password sesuai kebutuhan.
+
 ## Menjalankan Server
 
 Jalankan perintah berikut:

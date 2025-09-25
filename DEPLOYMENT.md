@@ -52,6 +52,22 @@ After deployment, your app will be available at:
 npm install
 ```
 
+### Environment Setup
+1. Copy the environment template:
+   ```bash
+   copy .env.example .env
+   ```
+2. Edit `.env` file and set your desired passwords:
+   ```
+   SESSION_SECRET=your-super-secret-session-key-here
+   ADMIN_PASSWORD=your-admin-password
+   HOST_PASSWORD=your-host-password
+   PLAYER1_PASSWORD=your-player1-password
+   PLAYER2_PASSWORD=your-player2-password
+   PLAYER3_PASSWORD=your-player3-password
+   PLAYER4_PASSWORD=your-player4-password
+   ```
+
 ### Run Locally
 ```bash
 npm start
