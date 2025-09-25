@@ -16,9 +16,10 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: { 
-        secure: process.env.NODE_ENV === 'production' && process.env.VERCEL_URL,
+        secure: false, // Set to false for Vercel compatibility
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        sameSite: 'lax' // Add sameSite for better compatibility
     }
 }));
 
@@ -59,9 +60,18 @@ const users = {
 
 // Authentication middleware
 function requireAuth(req, res, next) {
+    console.log('Auth check:', { 
+        sessionExists: !!req.session, 
+        authenticated: req.session?.authenticated,
+        username: req.session?.username,
+        role: req.session?.role,
+        url: req.url
+    });
+    
     if (req.session && req.session.authenticated) {
         return next();
     } else {
+        console.log('Authentication failed, redirecting to login');
         return res.redirect('/login.html');
     }
 }
@@ -69,13 +79,23 @@ function requireAuth(req, res, next) {
 // Role-based access middleware
 function requireRole(allowedRoles) {
     return (req, res, next) => {
+        console.log('Role check:', { 
+            sessionExists: !!req.session, 
+            authenticated: req.session?.authenticated,
+            userRole: req.session?.role,
+            allowedRoles,
+            url: req.url
+        });
+        
         if (!req.session || !req.session.authenticated) {
+            console.log('Role check failed: not authenticated, redirecting to login');
             return res.redirect('/login.html');
         }
         
         if (allowedRoles.includes(req.session.role)) {
             return next();
         } else {
+            console.log('Role check failed: insufficient permissions');
             return res.status(403).send('Access denied: Insufficient permissions');
         }
     };
@@ -84,6 +104,8 @@ function requireRole(allowedRoles) {
 // Authentication routes
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
+    
+    console.log('Login attempt:', { username, timestamp: new Date().toISOString() });
     
     if (!username || !password) {
         return res.status(400).json({ success: false, message: 'Username and password are required' });
@@ -96,12 +118,15 @@ app.post('/api/login', (req, res) => {
         req.session.username = username.toLowerCase();
         req.session.role = user.role;
         
+        console.log('Login successful:', { username: username.toLowerCase(), role: user.role });
+        
         res.json({ 
             success: true, 
             role: user.role,
             message: 'Login successful'
         });
     } else {
+        console.log('Login failed:', { username });
         res.status(401).json({ 
             success: false, 
             message: 'Invalid username or password' 
