@@ -11,14 +11,5 @@
       "src": "/(.*)",
       "dest": "/server.js"
     }
-  ],
-  "env": {
-    "SESSION_SECRET": "@session_secret",
-    "ADMIN_PASSWORD": "@admin_password",
-    "HOST_PASSWORD": "@host_password",
-    "PLAYER1_PASSWORD": "@player1_password",
-    "PLAYER2_PASSWORD": "@player2_password",
-    "PLAYER3_PASSWORD": "@player3_password",
-    "PLAYER4_PASSWORD": "@player4_password"
-  }
+  ]
 }
