@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family 100 - Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #003366, #004488);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            margin: 20px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #003366;
+        }
+
+        .login-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.2rem;
+            font-weight: bold;
+        }
+
+        .login-header p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #0055aa;
+            box-shadow: 0 0 0 3px rgba(0, 85, 170, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #0055aa;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            background-color: #003366;
+        }
+
+        .login-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .error-message {
+            color: #cc0000;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+            padding: 0.5rem;
+            background-color: #ffe6e6;
+            border-radius: 5px;
+            border: 1px solid #cc0000;
+        }
+
+        .success-message {
+            color: #00aa00;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+            padding: 0.5rem;
+            background-color: #e6ffe6;
+            border-radius: 5px;
+            border: 1px solid #00aa00;
+        }
+
+        .demo-accounts {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #0055aa;
+        }
+
+        .demo-accounts h3 {
+            margin: 0 0 1rem 0;
+            color: #003366;
+            font-size: 1.1rem;
+        }
+
+        .account-list {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .account-item {
+            margin-bottom: 0.5rem;
+            padding: 0.3rem 0;
+        }
+
+        .account-item strong {
+            color: #333;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .loading::after {
+            content: "...";
+            animation: dots 2s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: "."; }
+            40% { content: ".."; }
+            60% { content: "..."; }
+            80%, 100% { content: ""; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🎮 Family 100</h1>
+            <p>Silakan login untuk melanjutkan permainan</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required placeholder="Masukkan username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required placeholder="Masukkan password">
+            </div>
+            
+            <button type="submit" class="login-btn" id="loginButton">Login</button>
+        </form>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        <div id="loading" class="loading">Sedang login</div>
+        
+        <div class="demo-accounts">
+            <h3>🔑 Akun Demo:</h3>
+            <div class="account-list">
+                <div class="account-item"><strong>Admin:</strong> admin / admin123</div>
+                <div class="account-item"><strong>Host:</strong> host / host123</div>
+                <div class="account-item"><strong>Player 1:</strong> player1 / player123</div>
+                <div class="account-item"><strong>Player 2:</strong> player2 / player123</div>
+                <div class="account-item"><strong>Player 3:</strong> player3 / player123</div>
+                <div class="account-item"><strong>Player 4:</strong> player4 / player123</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            const loadingDiv = document.getElementById('loading');
+            const loginButton = document.getElementById('loginButton');
+            
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            // Show loading
+            loadingDiv.style.display = 'block';
+            loginButton.disabled = true;
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    successDiv.textContent = 'Login berhasil! Mengalihkan...';
+                    successDiv.style.display = 'block';
+                    
+                    // Redirect based on user role
+                    setTimeout(() => {
+                        if (result.role === 'admin') {
+                            window.location.href = '/host';
+                        } else if (result.role === 'host') {
+                            window.location.href = '/host';
+                        } else {
+                            window.location.href = '/player';
+                        }
+                    }, 1000);
+                } else {
+                    errorDiv.textContent = result.message || 'Username atau password salah';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.textContent = 'Terjadi kesalahan saat login. Silakan coba lagi.';
+                errorDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+                loginButton.disabled = false;
+            }
+        });
+
+        // Auto-focus username field
+        document.getElementById('username').focus();
+    </script>
+</body>
+</html>
